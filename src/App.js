@@ -35,13 +35,24 @@ class App extends Component {
   };
 
   handleSignIn = () => {
-    this.setState({ signedIn: true });
+    this.setState({
+      signedIn: true,
+      items: [],
+      generatedProfiles: 0,
+      showSubscribePopup: false,
+      showCongratsPopup: false
+    });
   };
 
   handleGenerateNewUser = () => {
-    const { signedIn, generatedProfiles, showSubscribePopup } = this.state;
+    const { signedIn, generatedProfiles, showSubscribePopup, isSubscribed } = this.state;
 
     if (!signedIn) {
+      return;
+    }
+
+    if (!isSubscribed && generatedProfiles >= 5) {
+      this.setState({ showSubscribePopup: true });
       return;
     }
 
@@ -250,7 +261,7 @@ class App extends Component {
                 cursor: 'pointer'
               }}
               onClick={() =>
-                this.setState({ showCongratsPopup: false, generatedProfiles: 0 })
+                this.setState({ showCongratsPopup: false, generatedProfiles: 0, isSubscribed: true })
               }
             >
               OK
@@ -263,5 +274,4 @@ class App extends Component {
 }
 
 export default App;
-
-    
+                  
