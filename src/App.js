@@ -10,7 +10,8 @@ class App extends Component {
       items: [],
       showSubscribePopup: false,
       showCongratsPopup: false,
-      generatedProfiles: 0
+      generatedProfiles: 0,
+      isSubscribed: false
     };
   }
 
@@ -25,7 +26,7 @@ class App extends Component {
             generatedProfiles: prevState.generatedProfiles + 1
           }),
           () => {
-            if (this.state.generatedProfiles === 5) {
+            if (this.state.generatedProfiles === 5 && !this.state.isSubscribed) {
               this.setState({ showSubscribePopup: true });
             }
           }
@@ -48,11 +49,6 @@ class App extends Component {
       return;
     }
 
-    if (generatedProfiles >= 5) {
-      this.setState({ showSubscribePopup: true });
-      return;
-    }
-
     this.setState({ loading: true }, this.fetchRandomUser);
   };
 
@@ -66,8 +62,14 @@ class App extends Component {
     });
   };
 
+  handleDeleteProfile = (uuid) => {
+    this.setState((prevState) => ({
+      items: prevState.items.filter((item) => item.login.uuid !== uuid)
+    }));
+  };
+
   handleSubscribe = () => {
-    this.setState({ showSubscribePopup: false, showCongratsPopup: true });
+    this.setState({ showSubscribePopup: false, showCongratsPopup: true, isSubscribed: true });
   };
 
   handleClosePopup = () => {
@@ -81,7 +83,8 @@ class App extends Component {
       items,
       showSubscribePopup,
       showCongratsPopup,
-      generatedProfiles
+      generatedProfiles,
+      isSubscribed
     } = this.state;
 
     if (!signedIn) {
@@ -179,7 +182,7 @@ class App extends Component {
             ))}
           </div>
         )}
-        {showSubscribePopup && (
+        {showSubscribePopup && !isSubscribed && (
           <div
             style={{
               position: 'fixed',
